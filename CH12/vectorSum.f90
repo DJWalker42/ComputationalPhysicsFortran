@@ -1,0 +1,93 @@
+PROGRAM VECSUM
+
+USE OMP_LIB
+
+IMPLICIT NONE
+
+DOUBLE PRECISION, ALLOCATABLE :: A(:)
+
+INTEGER, PARAMETER :: N = 10000000, MMAX = 100
+
+INTEGER I, J, TID, M, NUM
+
+DOUBLE PRECISION T1,T2,T3,T4,TS,TP,SUM
+
+CALL OMP_SET_NUM_THREADS(4)
+
+ALLOCATE( A(N) )
+
+DO I = 1,N
+
+A(I) = 1.D0
+
+END DO
+
+PRINT *, 'SINGLE CORE...'
+
+M = 1
+
+TS = 0.D0
+
+TP = 0.D0
+
+DO WHILE (M .LE. MMAX)
+
+SUM = 0.D0
+
+T1 = OMP_GET_WTIME()
+
+DO I = 1,N
+
+SUM = SUM + A(I)
+
+END DO
+
+T2 = OMP_GET_WTIME()
+
+TS = TS + (T2 - T1)
+
+M = M + 1
+
+END DO
+
+SUM = 0.D0
+
+M = 1
+
+PRINT *, 'PARALLEL CORES...'
+
+DO WHILE (M .LE. MMAX)
+
+T3 = OMP_GET_WTIME()
+
+!$OMP PARALLEL SHARED(A,SUM) PRIVATE(I)
+
+!$OMP DO REDUCTION(+:SUM)
+
+DO I = 1,N
+
+SUM = SUM + A(I)
+
+END DO
+
+!$OMP END DO
+
+!$OMP END PARALLEL
+
+T4 = OMP_GET_WTIME()
+
+TP = TP + T4 - T3
+
+M = M + 1
+
+END DO
+
+PRINT *, 'Serial time =', TS/DBLE(MMAX)
+
+PRINT *, 'Parallel time =', TP/DBLE(MMAX)
+
+DEALLOCATE( A )
+
+END PROGRAM VECSUM
+
+!END OF FILE******************************************
