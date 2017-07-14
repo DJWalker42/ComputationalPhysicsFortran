@@ -23,3 +23,5 @@ To run the programs you have compiled type at the command prompt:
 
 Enjoy!
 
+NB: There is a "typo" in the Runge-Kutta-Fehlberg algorithms. One of the coefficients is wrong in the code (this was supposed to be an exercise in the book but was omitted by mistake). The coefficients in the book are correct. To help here is the wikipedia article on the [Runge-Kutta-Fehleberg algorithm](https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta%E2%80%93Fehlberg_method) - pay attention to the Butcher Tableau. 
+
